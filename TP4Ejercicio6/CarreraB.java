@@ -69,7 +69,7 @@ class TestigoB{
         try {
             this.mutex.acquire();
         } catch (InterruptedException ex) {
-            Logger.getLogger(Testigo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestigoB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
