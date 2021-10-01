@@ -16,25 +16,25 @@ import java.util.logging.Logger;
 public class Letras {
 
     public static void main(String[] args) {
-        Letra a = new Letra('A', 0, 2);     //primer parametro es la letra, segundo el turno para imprimir y el tercero la cantidad de repeticiones de cada letra
-        Letra b = new Letra('B', 1, 3);
-        Letra c = new Letra('C', 2, 4);
+        Letra[] arregloLetras=new Letra[3];
+        Thread[] arregloHilos=new Thread[3];
+        arregloLetras[0]=new Letra('A', 0, 2);     //primer parametro es la letra, segundo el turno para imprimir y el tercero la cantidad de repeticiones de cada letra
+        arregloLetras[1]=new Letra('B', 1, 3);
+        arregloLetras[2]=new Letra('C', 2, 4);
 
-        Thread letra1 = new Thread(a, "Letra A");
-        Thread letra2 = new Thread(b, "Letra B");
-        Thread letra3 = new Thread(c, "Letra C");
+        for(int i=0;i<arregloLetras.length;i++){
+            arregloHilos[i]=new Thread(arregloLetras[i]);
+            arregloHilos[i].start();
+        }
+        
 
-        letra1.start();
-        letra2.start();
-        letra3.start();
     }
 }
-
-
 
 class Letra implements Runnable {
 
     static GestorTurnos gestor = new GestorTurnos();
+
     private int turno;
     private char letra;
     private int cant;
@@ -48,48 +48,61 @@ class Letra implements Runnable {
     public void imprimirLetra(int cant) {
         for (int i = 0; i < cant; i++) {
             System.out.println(this.letra);
+
         }
 
     }
 
     public void run() {
-        int cant = 0;
-        do {
-            if (gestor.getTurno() == this.turno) {
+        for (int i = 0; i < 2; i++) {
+            gestor.getTurno(this.turno);
 
-                imprimirLetra(this.cant);
+            imprimirLetra(this.cant);
 
-                gestor.siguienteTurno();
-
-                cant++;
-            }
-
-        } while (cant < 3);                     //modificar para mayor cantidad de repeticiones de la secuencia completa
-
+            gestor.siguienteTurno();
+        }
     }
 }
 
 class GestorTurnos {
 
-    private Semaphore mutex;
+    private Semaphore mutexA;
+    private Semaphore mutexB;
+    private Semaphore mutexC;
+
     private int turno = 0;
 
     public GestorTurnos() {
-        this.mutex = new Semaphore(1);
+        this.mutexA = new Semaphore(1);
+        this.mutexB = new Semaphore(0);
+        this.mutexC = new Semaphore(0);
     }
 
-    public int getTurno() {
+    public void getTurno(int turno) {
+        try {
+            if (turno == 0) {
+                this.mutexA.acquire();
+            } else if (turno == 1) {
+                this.mutexB.acquire();
+            } else {
+                this.mutexC.acquire();
+            }
 
-        return this.turno;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GestorTurnos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void siguienteTurno() {
-        try {
-            mutex.acquire();
-            this.turno = (this.turno + 1) % 3;
-            mutex.release();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(GestorTurnos.class.getName()).log(Level.SEVERE, null, ex);
+
+        this.turno = (this.turno + 1) % 3;
+        if (this.turno == 0) {
+            this.mutexA.release();
+        } else if (this.turno == 1) {
+            this.mutexB.release();
+        } else {
+            this.mutexC.release();
         }
 
     }
