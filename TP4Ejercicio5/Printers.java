@@ -13,15 +13,15 @@ import java.util.logging.Logger;
  *
  * @author alanizgustavo
  */
-public class Printers {
+/*public class Printers {
     public static void main(String []args){
-        Impresoras[]impresorasA=new Impresoras[5];
-        Impresoras[]impresorasB=new Impresoras[5];
+        CentroImpresion[]impresorasA=new CentroImpresion[5];
+        CentroImpresion[]impresorasB=new CentroImpresion[5];
         Usuarios[] usuarios=new Usuarios[10];
         Thread[]hilos=new Thread[10];
         
         for(int i=0;i<impresorasA.length;i++){
-            impresorasA[i]=new Impresoras("A");
+            CentroImpresion[i]=new CentroImpresion("A");
         }
         
         for(int j=0;j<impresorasA.length;j++){
@@ -76,4 +76,4 @@ class CentroImpresion{
             Logger.getLogger(CentroImpresion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+}*/

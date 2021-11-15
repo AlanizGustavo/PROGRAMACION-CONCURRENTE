@@ -40,7 +40,7 @@ class Taxista implements Runnable {
         this.auto = coche;
     }
 
-    public void manejar() {
+    private void manejar() {
         System.out.println("MANEJANDO");
         try {
             Thread.sleep(2000);
