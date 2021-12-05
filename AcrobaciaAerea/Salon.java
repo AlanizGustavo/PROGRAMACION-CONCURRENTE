@@ -36,7 +36,7 @@ public class Salon {
         this.act2 = new Semaphore(4);                                           //Semaforo mutex de act3
         this.mutex= new Semaphore(1);
 
-        this.realizandoEjercicios = new Semaphore(0);                             //Semaforo para bloquear los hilos y simular la actividad
+        this.realizandoEjercicios = new Semaphore(0,true);                      //Semaforo para bloquear los hilos y simular la actividad
 
         this.reloj = new Semaphore(0);
 
@@ -119,9 +119,7 @@ public class Salon {
 
     public void realizarActividadElegida() {
         try {
-            System.out.println("????????????????????????????????????????");
             this.realizandoEjercicios.acquire();
-            System.out.println("########################################");
         } catch (InterruptedException ex) {
             Logger.getLogger(Salon.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,7 +135,6 @@ public class Salon {
 
     public void timbreCambioActividades() {
         try {
-
             this.act0.release(4);
             this.act1.release(4);
             this.act2.release(4);
