@@ -23,6 +23,7 @@ public class Salon {
     private Semaphore act0;
     private Semaphore act1;
     private Semaphore act2;
+    private Semaphore mutex;
 
     private Semaphore realizandoEjercicios;
 
@@ -33,6 +34,7 @@ public class Salon {
         this.act0 = new Semaphore(4);                                           //Semaforo mutex de act1
         this.act1 = new Semaphore(4);                                           //Semaforo mutex de act2
         this.act2 = new Semaphore(4);                                           //Semaforo mutex de act3
+        this.mutex= new Semaphore(1);
 
         this.realizandoEjercicios = new Semaphore(0);                             //Semaforo para bloquear los hilos y simular la actividad
 
@@ -61,7 +63,13 @@ public class Salon {
                 case 0:
                     if (act0.tryAcquire()) {
                         exito = true;
-                        this.cantPersonas++;
+                        try {
+                            this.mutex.acquire();
+                            this.cantPersonas++;
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Salon.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        this.mutex.release();
                     }
 
                     break;
@@ -69,13 +77,25 @@ public class Salon {
                 case 1:
                     if (act1.tryAcquire()) {
                         exito = true;
-                        this.cantPersonas++;
+                        try {
+                            this.mutex.acquire();
+                            this.cantPersonas++;
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Salon.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        this.mutex.release();
                     }
                     break;
                 case 2:
                     if (act2.tryAcquire()) {
                         exito = true;
-                        this.cantPersonas++;
+                        try {
+                            this.mutex.acquire();
+                            this.cantPersonas++;
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Salon.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        this.mutex.release();
                     }
                     break;
             }
@@ -84,10 +104,16 @@ public class Salon {
                 actividad = a.nextInt(3);
             }
         }
-        if (this.cantPersonas == 12) {
+        try {
+            mutex.acquire();
+            if (this.cantPersonas == 12) {
 
-            reloj.release();
+                reloj.release();
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Salon.class.getName()).log(Level.SEVERE, null, ex);
         }
+        mutex.release();
         return actividad;
     }
 
